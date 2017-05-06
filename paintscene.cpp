@@ -18,11 +18,37 @@ paintScene::paintScene(QObject *parent) : QGraphicsScene(parent)
                        QBrush(Qt::red));
         }
     }
+
+    tmr = new QTimer(this); // Создаем объект класса QTimer и передаем адрес переменной
+    tmr->setInterval(1000); // Задаем интервал таймера
+    connect(tmr, &QTimer::timeout, this, &paintScene::updatePoint); // Подключаем сигнал таймера к нашему слоту
+    tmr->start(); // Запускаем таймер
+
 }
 
 paintScene::~paintScene()
 {
+    tmr->stop();
+}
 
+void paintScene::updatePoint()
+{
+    std::cerr <<  "ПРоверка" << "\n";
+
+    bool status = false;
+    //status = IsStatus();
+    if (status == true) {
+        std::vector<points> points;
+        //points = changes();
+        for (int i = 0; i < points.size(); i++) {
+            addEllipse(points[i].x - 5,
+                       points[i].y - 5,
+                       10,
+                       10,
+                       QPen(Qt::NoPen),
+                       QBrush(Qt::red));
+        }
+    }
 }
 
 void paintScene::mousePressEvent(QGraphicsSceneMouseEvent *event)

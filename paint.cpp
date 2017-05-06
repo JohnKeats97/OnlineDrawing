@@ -26,7 +26,6 @@ void Paint::slotTimer()
     /* Переопределяем размеры графической сцены в зависимости
      * от размеров окна
      * */
-    std::cerr <<  1 << "\n";
     timer->stop();
     scene->setSceneRect(0,0, ui->graphicsView->width() - 20, ui->graphicsView->height() - 20);
 }
