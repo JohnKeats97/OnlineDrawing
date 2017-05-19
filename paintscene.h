@@ -23,7 +23,8 @@ class paintScene : public QGraphicsScene
 public:
     explicit paintScene(QObject *parent = 0);
     ~paintScene();
-    std::vector<points> Vector_point;
+
+    void updatePoints();
 
 private:
     QPointF     previousPoint;      // Координаты предыдущей точки
@@ -31,10 +32,10 @@ private:
 
 
 private:
+    std::vector<points> Vector_point;
     // Для рисования используем события мыши
     void mousePressEvent(QGraphicsSceneMouseEvent * event);
     void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
-    void updatePoints();
 };
 
 

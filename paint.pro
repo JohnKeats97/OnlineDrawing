@@ -18,6 +18,7 @@ SOURCES += main.cpp\
     paintscene.cpp
 
 HEADERS  += paint.h \
-    paintscene.h
+    paintscene.h \
+    command.h
 
 FORMS    += paint.ui

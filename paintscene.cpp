@@ -4,6 +4,8 @@
 #include <chrono>
 #include <thread>
 #include <mutex>
+#include "command.h"
+
 
 std::mutex my_mutex;
 
@@ -14,8 +16,8 @@ void updatePoint( std::vector<points>& Vector_point ) // std::vector<double> New
         bool status = true;
         //status = IsStatus();
         if (status == true) {
-//            std::vector<points> points (500);
-//            for (int i = 0; i < 500; i++) {
+//            std::vector<points> points (50);
+//            for (int i = 0; i < 50; i++) {
 //                points[i].x = i+ 5;
 //                points[i].y = i+ 15;
 //            }
@@ -25,11 +27,14 @@ void updatePoint( std::vector<points>& Vector_point ) // std::vector<double> New
             // примет изменения
             // Паттерн команда
             // результат перекинет в поток отрисовки и встанет в очередь на отрисовку или отрисуется сразу
-            my_mutex.lock();
-            Vector_point = points;
-//            v1.clear();
-//            v1.insert(v1.begin(), v2.begin(), v2.end());
-            my_mutex.unlock();
+            if (!points.empty()) {
+                my_mutex.lock();
+                Command_GetChange p (points);
+                p.execute(Vector_point);
+    //            v1.clear();
+    //            v1.insert(v1.begin(), v2.begin(), v2.end());
+                my_mutex.unlock();
+            }
         }
 
 
@@ -63,7 +68,6 @@ paintScene::paintScene(QObject *parent) : QGraphicsScene(parent)
     //status = IsStatus();
     if (status == true) {
         //points = changes();
-//        my_mutex.lock();
 //        for (int i = 0; i < points.size(); i++) {
 //            addEllipse(points[i].x - 5,
 //                       points[i].y - 5,
@@ -72,7 +76,6 @@ paintScene::paintScene(QObject *parent) : QGraphicsScene(parent)
 //                       QPen(Qt::NoPen),
 //                       QBrush(Qt::red));
 //        }
-//        my_mutex.unlock();
     }
 
     // открываю поток по принятию изменений в вечном цикле вызывю updatePoint ///// QTread или qsocketnotifaer
@@ -100,14 +103,12 @@ paintScene::~paintScene()
 void paintScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
     // При нажатии кнопки мыши отрисовываем эллипс
-//    my_mutex.lock();
     addEllipse(event->scenePos().x() - 5,
                event->scenePos().y() - 5,
                10,
                10,
                QPen(Qt::NoPen),
                QBrush(Qt::red));
-//    my_mutex.unlock();
 
     points point;
     point.x = event->scenePos().x();
@@ -123,14 +124,12 @@ void paintScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
 void paintScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 {
     // При нажатии кнопки мыши отрисовываем эллипс
-//    my_mutex.lock();
     addEllipse(event->scenePos().x() - 5,
                    event->scenePos().y() - 5,
                    10,
                    10,
                    QPen(Qt::NoPen),
                    QBrush(Qt::red));
-//    my_mutex.unlock();
 
     points point;
     point.x = event->scenePos().x();
