@@ -19,6 +19,7 @@ SOURCES += main.cpp\
 
 HEADERS  += paint.h \
     paintscene.h \
-    command.h
+    command.h \
+    lock_guard.h
 
 FORMS    += paint.ui

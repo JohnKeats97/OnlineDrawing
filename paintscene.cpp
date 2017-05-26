@@ -5,11 +5,11 @@
 #include <thread>
 #include <mutex>
 #include "command.h"
+#include "lock_guard.h"
 
+//std::mutex my_mutex;
 
-std::mutex my_mutex;
-
-void updatePoint( std::vector<points>& Vector_point ) // std::vector<double> NewPoints )
+void paintScene::changePoint( std::vector<points>& Vector_point )
 {
     while (true) {
         std::cerr <<  "ПРоверка" << "\n";
@@ -20,20 +20,22 @@ void updatePoint( std::vector<points>& Vector_point ) // std::vector<double> New
 //            for (int i = 0; i < 50; i++) {
 //                points[i].x = i+ 5;
 //                points[i].y = i+ 15;
+
 //            }
 
             std::vector<points> points;
             //points = changes();
             // примет изменения
             // Паттерн команда
-            // результат перекинет в поток отрисовки и встанет в очередь на отрисовку или отрисуется сразу
+            // результат перекинет в поток отрисовки
             if (!points.empty()) {
-                my_mutex.lock();
+                loguard auto_mutex;
+                //my_mutex.lock();
                 Command_GetChange p (points);
                 p.execute(Vector_point);
     //            v1.clear();
     //            v1.insert(v1.begin(), v2.begin(), v2.end());
-                my_mutex.unlock();
+                //my_mutex.unlock();
             }
         }
 
@@ -46,7 +48,8 @@ void updatePoint( std::vector<points>& Vector_point ) // std::vector<double> New
 
 void paintScene::updatePoints ()
 {
-    my_mutex.lock();
+    loguard auto_mutex;
+    //my_mutex.lock();
     if (!Vector_point.empty()) {
         for (int i = 0; i < Vector_point.size(); i++) {
             addEllipse(Vector_point[i].x - 5,
@@ -58,7 +61,7 @@ void paintScene::updatePoints ()
         }
         Vector_point.clear();
     }
-    my_mutex.unlock();
+    //my_mutex.unlock();
 
 }
 
@@ -78,24 +81,24 @@ paintScene::paintScene(QObject *parent) : QGraphicsScene(parent)
 //        }
     }
 
-    // открываю поток по принятию изменений в вечном цикле вызывю updatePoint ///// QTread или qsocketnotifaer
+    // открываю поток по принятию изменений в вечном цикле вызывю changePoint и записываю изменения в updatePoints
 
-    std::thread thr (updatePoint, std::ref(Vector_point));
+    thr = new std::thread (paintScene::changePoint, std::ref(Vector_point));
 
-    thr.detach();
+    thr->detach();
 
     tmr = new QTimer(this); // Создаем объект класса QTimer и передаем адрес переменной
     tmr->setInterval(110); // Задаем интервал таймера
     connect(tmr, &QTimer::timeout, this, &paintScene::updatePoints); // Подключаем сигнал таймера к нашему слоту
     tmr->start(); // Запускаем таймер
-
 }
-
 
 
 paintScene::~paintScene()
 {
     tmr->stop();
+    delete tmr;
+    delete thr;
 }
 
 

@@ -6,6 +6,7 @@
 #include <QTimer>
 #include <QDebug>
 #include <vector>
+#include <thread>
 
 
 struct points {
@@ -23,16 +24,16 @@ class paintScene : public QGraphicsScene
 public:
     explicit paintScene(QObject *parent = 0);
     ~paintScene();
-
+    static void changePoint(std::vector<points>& Vector_point);
     void updatePoints();
 
 private:
     QPointF     previousPoint;      // Координаты предыдущей точки
     QTimer *tmr;
-
+    std::thread *thr;
+    std::vector<points> Vector_point;
 
 private:
-    std::vector<points> Vector_point;
     // Для рисования используем события мыши
     void mousePressEvent(QGraphicsSceneMouseEvent * event);
     void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
