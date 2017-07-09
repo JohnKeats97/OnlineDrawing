@@ -7,7 +7,7 @@
 #include "command.h"
 #include "lock_guard.h"
 
-//std::mutex my_mutex;
+std::mutex my_mutex;
 
 void paintScene::changePoint( std::vector<points>& Vector_point )
 {
@@ -16,20 +16,20 @@ void paintScene::changePoint( std::vector<points>& Vector_point )
         bool status = true;
         //status = IsStatus();
         if (status == true) {
-//            std::vector<points> points (50);
-//            for (int i = 0; i < 50; i++) {
-//                points[i].x = i+ 5;
-//                points[i].y = i+ 15;
+            std::vector<points> points (50);
+            for (int i = 0; i < 50; i++) {
+                points[i].x = i+ 5;
+                points[i].y = i+ 15;
 
-//            }
+            }
 
-            std::vector<points> points;
+//            std::vector<points> points;
             //points = changes();
             // примет изменения
             // Паттерн команда
             // результат перекинет в поток отрисовки
             if (!points.empty()) {
-                loguard auto_mutex;
+                loguard auto_mutex (&my_mutex);
                 //my_mutex.lock();
                 Command_GetChange p (points);
                 p.execute(Vector_point);
@@ -48,7 +48,7 @@ void paintScene::changePoint( std::vector<points>& Vector_point )
 
 void paintScene::updatePoints ()
 {
-    loguard auto_mutex;
+    loguard auto_mutex (&my_mutex);
     //my_mutex.lock();
     if (!Vector_point.empty()) {
         for (int i = 0; i < Vector_point.size(); i++) {

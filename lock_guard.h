@@ -8,18 +8,19 @@ class loguard
 {
 
 public:
-    loguard ()
+    loguard (std::mutex *my_m)
     {
-        my_mutex.lock();
+        my_mutex = my_m;
+        my_mutex->lock();
     }
 
     ~loguard ()
     {
-        my_mutex.unlock();
+        my_mutex->unlock();
     }
 
 private:
-    std::mutex my_mutex;
+    std::mutex *my_mutex;
 };
 
 
