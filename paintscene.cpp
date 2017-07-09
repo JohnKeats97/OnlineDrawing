@@ -16,14 +16,14 @@ void paintScene::changePoint( std::vector<points>& Vector_point )
         bool status = true;
         //status = IsStatus();
         if (status == true) {
-            std::vector<points> points (50);
-            for (int i = 0; i < 50; i++) {
-                points[i].x = i+ 5;
-                points[i].y = i+ 15;
+//            std::vector<points> points (50);
+//            for (int i = 0; i < 50; i++) {
+//                points[i].x = i+ 5;
+//                points[i].y = i+ 15;
 
-            }
+//            }
 
-//            std::vector<points> points;
+            std::vector<points> points;
             //points = changes();
             // примет изменения
             // Паттерн команда
